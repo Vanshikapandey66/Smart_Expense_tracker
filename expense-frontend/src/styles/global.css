@@ -1,0 +1,11 @@
+/* src/styles/global.css */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f9fafb;
+  margin: 0;
+  padding: 0;
+}
+
+input, button {
+  outline: none;
+}

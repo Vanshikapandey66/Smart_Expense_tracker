@@ -16,24 +16,26 @@ from .serializers import (
 )
 
 
-# ---------------- REGISTER (NEW USER SIGNUP) ----------------
+# ---------------- REGISTER ----------------
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
 
+# ---------------- CATEGORY ----------------
 class CategoryViewSet(viewsets.ModelViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().order_by("-id")
     serializer_class = CategorySerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Category.objects.filter(user=self.request.user)
+        return Category.objects.filter(user=self.request.user).order_by("-id")
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
+# ---------------- TRANSACTION FILTER ----------------
 class TransactionFilter(filters.FilterSet):
     start_date = filters.DateFilter(field_name="date", lookup_expr="gte")
     end_date = filters.DateFilter(field_name="date", lookup_expr="lte")
@@ -43,6 +45,7 @@ class TransactionFilter(filters.FilterSet):
         fields = ["category", "start_date", "end_date"]
 
 
+# ---------------- TRANSACTION ----------------
 class TransactionViewSet(viewsets.ModelViewSet):
     queryset = Transaction.objects.all().order_by("-date", "-id")
     serializer_class = TransactionSerializer
@@ -90,18 +93,20 @@ class TransactionViewSet(viewsets.ModelViewSet):
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
+# ---------------- BUDGET ----------------
 class BudgetViewSet(viewsets.ModelViewSet):
-    queryset = Budget.objects.all()
+    queryset = Budget.objects.all().order_by("-id")
     serializer_class = BudgetSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user)
+        return Budget.objects.filter(user=self.request.user).order_by("-id")
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
 
+# ---------------- MONTHLY SUMMARY ----------------
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def monthly_summary(request):
@@ -126,12 +131,13 @@ def monthly_summary(request):
     })
 
 
+# ---------------- TOP SPENDING CATEGORY ----------------
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def top_spending_category(request):
     data = (
         Transaction.objects
-        .filter(user=request.user)
+        .filter(user=request.user, category__type__iexact="expense")
         .values("category__name")
         .annotate(total_spent=Sum("amount"))
         .order_by("-total_spent")
@@ -139,7 +145,7 @@ def top_spending_category(request):
     )
 
     if not data:
-        return Response({"message": "No transactions found"})
+        return Response({"top_category": "", "total_spent": 0})
 
     return Response({
         "top_category": data["category__name"],
@@ -147,18 +153,20 @@ def top_spending_category(request):
     })
 
 
+# ---------------- CATEGORY EXPENSE CHART ----------------
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def category_expense_chart(request):
     data = (
         Transaction.objects
-        .filter(user=request.user)
+        .filter(user=request.user, category__type__iexact="expense")
         .values("category__name")
         .annotate(total=Sum("amount"))
+        .order_by("-total")
     )
 
     if not data:
-        return Response({"message": "No data available"})
+        return Response({})
 
     result = {}
     for item in data:
@@ -167,6 +175,7 @@ def category_expense_chart(request):
     return Response(result)
 
 
+# ---------------- BUDGET STATUS ----------------
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def budget_status(request):
@@ -197,19 +206,21 @@ def budget_status(request):
     })
 
 
+# ---------------- BUDGET ALERT ----------------
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def budget_alert(request):
     alerts = []
 
-    budgets = Budget.objects.filter(user=request.user)
+    budgets = Budget.objects.filter(user=request.user).order_by("-id")
 
     for budget in budgets:
         spent = Transaction.objects.filter(
             user=request.user,
             category=budget.category,
             date__month=budget.month,
-            date__year=budget.year
+            date__year=budget.year,
+            category__type__iexact="expense"
         ).aggregate(Sum("amount"))["amount__sum"] or 0
 
         if spent > budget.amount:
@@ -223,14 +234,16 @@ def budget_alert(request):
     return Response(alerts)
 
 
+# ---------------- CATEGORY PERCENTAGE ----------------
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def category_percentage(request):
     data = (
         Transaction.objects
-        .filter(user=request.user)
+        .filter(user=request.user, category__type__iexact="expense")
         .values("category__name")
         .annotate(total=Sum("amount"))
+        .order_by("-total")
     )
 
     total_sum = sum(item["total"] for item in data)

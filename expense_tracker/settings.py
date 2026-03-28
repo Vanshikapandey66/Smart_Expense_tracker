@@ -156,7 +156,7 @@ CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://smart-expense-tracker.vercel.app",
+    "https://smart-expense-tracker-hazel.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [

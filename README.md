@@ -67,52 +67,72 @@ env\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
 python manage.py runserver
+
+
+
 3️⃣ Frontend Setup
 cd expense-frontend
 npm install
 npm start
+
+
+
 📡 API Endpoints
 Authentication
 POST /api/register/
 POST /api/token/
 POST /api/token/refresh/
+
 Categories
 GET /api/categories/
 POST /api/categories/
 DELETE /api/categories/<id>/
+
 Transactions
 GET /api/transactions/
 POST /api/transactions/
 PUT /api/transactions/<id>/
 DELETE /api/transactions/<id>/
+
 Budgets
 GET /api/budgets/
 POST /api/budgets/
 PUT /api/budgets/<id>/
 DELETE /api/budgets/<id>/
+
+
+
 🧠 Key Highlights
 🔁 Implemented JWT token refresh flow using Axios interceptors
 🔒 Secured API endpoints with authentication
 🌐 Successfully deployed full-stack app (Vercel + Render)
 📊 Integrated dynamic charts using Recharts
 ⚡ Optimized API calls with filtering & pagination
+
+
 ⚠️ Challenges Faced
 Handling JWT authentication and token refresh
 Fixing CORS issues during deployment
 Managing separate frontend & backend deployments
 Database migration from SQLite to PostgreSQL
+
+
+
 🔮 Future Improvements
 Forgot password via email
 Profile management
 Export reports (PDF/CSV)
 Notifications for budget alerts
 Advanced analytics dashboard
-👩‍💻 Author
 
+
+
+👩‍💻 Author
 Vanshika Pandey
 
-📌 Project Status
 
+
+📌 Project Status
 ✅ Completed
 ✅ Fully deployed
 ✅ Production ready

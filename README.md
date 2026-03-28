@@ -1,83 +1,118 @@
-# 💰 Expense Tracker API (Django REST Framework)
+# 💸 Smart Expense Tracker
 
-A full-featured backend API for managing personal expenses, budgets, and analytics.
-
----
-
-## 🚀 Features
-
-### 🔐 Authentication
-- User login required
-- Data is user-specific (no data leakage)
-
-### 📁 Category Management
-- Create, update, delete categories
-- Income / Expense types supported
-
-### 💸 Transactions
-- Add income & expenses
-- Recurring transactions support
-- Validation (amount > 0)
-
-### 💰 Budget System
-- Set monthly budget per category
-- Automatic **budget exceeded warning**
-
-### 🔍 Search, Filter & Sorting
-- Search by description & category
-- Filter by date range
-- Sort by amount/date
-- Pagination enabled
-
-### 📊 Analytics APIs
-- Monthly summary (income, expense, balance)
-- Top spending category
-- Category-wise expense chart
-- Category percentage distribution
+A full-stack web application to manage daily expenses, budgets, and financial insights.  
+Built using **Django REST Framework** and **React**, with secure authentication and real-time data visualization.
 
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Live Demo
 
-- Python
+- 🔗 Frontend: https://smart-expense-tracker-hazel.vercel.app  
+- 🔗 Backend API: https://expense-tracker-backend-vpac.onrender.com/api/
+
+---
+
+## ✨ Features
+
+- 🔐 User Authentication (JWT-based login & register)
+- 📊 Dashboard with income, expense, and balance
+- 💰 Add, edit, delete transactions
+- 🗂 Category management (income & expense types)
+- 🎯 Budget tracking with alerts
+- 📈 Reports with charts (Pie, Bar, Line)
+- 🔍 Filtering, searching, and pagination
+- 🌙 Dark / Light mode UI
+- 📱 Responsive design
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
+- React
+- Axios
+- React Router DOM
+- Recharts
+
+### Backend
 - Django
 - Django REST Framework
-- SQLite
-- drf-yasg (Swagger API docs)
+- Simple JWT (Authentication)
+- Django Filter
+- drf_yasg (API documentation)
+
+### Database
+- PostgreSQL (Production)
+- SQLite (Development)
+
+### Deployment
+- Frontend → Vercel
+- Backend → Render
+- Database → Render PostgreSQL
 
 ---
 
-## 📌 API Endpoints
+## ⚙️ Installation & Setup
 
-### 🔹 Transactions
-- `GET /api/transactions/`
-- `POST /api/transactions/`
+### 1️⃣ Clone the repository
+```bash
+git clone https://github.com/Vanshikapandey66/Smart_Expense_tracker
+cd Expense_Tracker_DRF_Project
 
-### 🔹 Categories
-- `GET /api/categories/`
-- `POST /api/categories/`
 
-### 🔹 Budgets
-- `GET /api/budgets/`
-- `POST /api/budgets/`
+2️⃣ Backend Setup
+python -m venv env
+env\Scripts\activate
 
-### 🔹 Analytics
-- `GET /api/summary/`
-- `GET /api/top-category/`
-- `GET /api/category-chart/`
-- `GET /api/category-percentage/`
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+3️⃣ Frontend Setup
+cd expense-frontend
+npm install
+npm start
+📡 API Endpoints
+Authentication
+POST /api/register/
+POST /api/token/
+POST /api/token/refresh/
+Categories
+GET /api/categories/
+POST /api/categories/
+DELETE /api/categories/<id>/
+Transactions
+GET /api/transactions/
+POST /api/transactions/
+PUT /api/transactions/<id>/
+DELETE /api/transactions/<id>/
+Budgets
+GET /api/budgets/
+POST /api/budgets/
+PUT /api/budgets/<id>/
+DELETE /api/budgets/<id>/
+🧠 Key Highlights
+🔁 Implemented JWT token refresh flow using Axios interceptors
+🔒 Secured API endpoints with authentication
+🌐 Successfully deployed full-stack app (Vercel + Render)
+📊 Integrated dynamic charts using Recharts
+⚡ Optimized API calls with filtering & pagination
+⚠️ Challenges Faced
+Handling JWT authentication and token refresh
+Fixing CORS issues during deployment
+Managing separate frontend & backend deployments
+Database migration from SQLite to PostgreSQL
+🔮 Future Improvements
+Forgot password via email
+Profile management
+Export reports (PDF/CSV)
+Notifications for budget alerts
+Advanced analytics dashboard
+👩‍💻 Author
 
----
+Vanshika Pandey
 
-## 🧪 Sample Request
+📌 Project Status
 
-### Create Transaction
-
-```json
-{
-  "category_id": 1,
-  "amount": 500,
-  "date": "2026-03-18",
-  "description": "Dinner",
-  "is_recurring": false
-}
+✅ Completed
+✅ Fully deployed
+✅ Production ready
